@@ -1,0 +1,7 @@
+{
+	"tag-pair": true,
+	"attr-value-double-quotes": true,
+	"attr-no-duplication": true,
+	"id-unique": true,
+	"id-class-ad-disabled": true
+}

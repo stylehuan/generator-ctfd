@@ -1,0 +1,1 @@
+TortoiseProc /command:commit /path:"F:\work\SaiquddzDoc\" /logmsg:"test log message" /closeonend:2

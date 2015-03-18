@@ -1,15 +1,19 @@
 {
-  "name": "generator-ctfd",
-  "version": "0.0.1",
-  "description": "",
-  "files": [
-    "app",
-    "router"
-  ],
-  "keywords": [
-    "yeoman-generator"
-  ],
-  "dependencies": {
-    "yeoman-generator": ""
-  }
+    "name": "generator-ctfd",
+    "version": "0.0.1",
+    "description": "yo generator",
+    "author": {
+        "name": "misar",
+        "email": "fhuanweb@gmial.com"
+    },
+    "files": [
+        "app",
+        "router"
+    ],
+    "keywords": [
+        "yeoman-generator"
+    ],
+    "dependencies": {
+        "yeoman-generator": ""
+    }
 }

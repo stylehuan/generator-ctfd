@@ -7,8 +7,8 @@
         "email": "<%= email %>"
     },
     "repository": {
-        "type": "git",
-        "url": ""
+        "type": "<%=repositoryType>",
+        "url": "<%=repositoryUrl>"
     },
     "devDependencies": {
         "amd-optimize": "^0.4.2",

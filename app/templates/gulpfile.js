@@ -1,128 +1,184 @@
 var gulp = require('gulp');
-var fs = require("fs");
+var load = require('gulp-load-plugins')({
+    rename: {
+        "gulp-webpack-build": "webpack",
+        'gulp-import-css': 'importCss',
+        "gulp-if": "gulpif",
+        "gulp-rev-all": "revAll",
+        "gulp-rev-css-url": "override",
+        "gulp-rev-replace": "revAllRep",
+        "gulp-imagemin": "imgmin",
+        'gulp-minify-css': 'minifyCss',
+        "gulp-file-include": "include",
+        "gulp-gather-mainjs": "gatherJs"
+    }
+});
+//var browserSync = require("browser-sync");
+//var reload = browserSync.reload;
 var path = require("path");
-
-var importCss = require("gulp-import-css"); //查找样式文件中的import，引入并合并
-var minifyCSS = require('gulp-minify-css');//css压缩
-var uglify = require('gulp-uglify');//丑化js
-var rename = require("gulp-rename"); //重命名
-var clean = require("gulp-clean");
-var rev = require("gulp-rev");//将文件名加一个hash值，解决缓存问题
-var del = require('del');//删除目录或文件
-var concat = require('gulp-concat'); //文件合并
-var amdOptimize = require("amd-optimize"); //amd加载器合并
-var md5 = require("gulp-md5");//生成md5
-var useref = require('gulp-useref');//注释替换
-var filter = require('gulp-filter');
-var exec = require('child_process').exec;
-var my = require("./sourceMaps");
+var app = require("./app");
 
 
-var config = {
-    sourcePath: "src",//静态资源源路径
-    baseBuild: "build",
-    buildView: "build/view",//构建View
-    buildBeautify: "beautify",//构建后未压缩版
-    buildAssets: "build/assets",//构建的静态资源目录
-    temp: "temp", //临时目录
-    sourceMapName: "sourceMaps", //配置文件名称
-    sourceMapPath: ".",//配置文件生成的目录
-    commitPath:"F:/work/SaiquddzDoc/"
+/*==基础配置==================================================*/
+var config = require("./build");
+var BUILD = path.join(__dirname, "./build");
+var dirSrc = path.join(__dirname, "./src");
+
+//webpack配置
+var webPack = {
+    fileName: load.webpack.config.CONFIG_FILENAME,
+    config: {
+        useMemoryFs: true,
+        progress: true
+    },
+    options: {
+        debug: true,
+//        devtool: '#source-map',
+        watchDelay: 200
+    }
 };
-
-var delHandler = function (path, cd) {
-    cd = cd || function () {
-    };
-    del([path], function (err, deletedFiles) {
-        console.log('Files deleted:', deletedFiles.join(', '));
-        cd();
-    });
-};
-
-//删除
-gulp.task("del", function () {
-    return gulp.src(config.baseBuild, {read: false})
-        .pipe(clean({force: true}));
-});
-
-//生成base
-gulp.task("base", function () {
-    return gulp.src(config.sourcePath + "/js/common.js")
-        .pipe(concat("base.js"))
-        .pipe(gulp.dest(config.temp));
-});
-
-//处理AMD
-gulp.task("amd", function () {
-    return gulp.src(config.sourcePath + "/**/*.js")
-        .pipe(amdOptimize(config.sourcePath + "/js/index", {
-            findNestedDependencies: true,
-            configFile: config.sourcePath + "/js/requireConf.js"
-        }))
-        .pipe(concat("index.js"))
-        .pipe(gulp.dest(config.temp));
-});
-
-//生成commonjs
-gulp.task("common", ["base", "amd"], function () {
-    var stream = gulp.src(config.temp + "/*.js")
-        .pipe(concat("common.js"))
-        .pipe(gulp.dest(config.buildAssets + "/js"));//生成未压缩版
-    delHandler(config.temp);
-    return stream;
+/*==任务配置==================================================*/
+//清理
+gulp.task("clean", function () {
+    return gulp.src([BUILD, "other", "pub"], {read: false})
+        .pipe(load.clean({force: true}));
 });
 
 //处理css
-gulp.task("css", function () {
-    return gulp.src(config.sourcePath + "/css/*.css")
-        .pipe(gulp.dest(config.buildAssets + "/css"))
-});
-
-//map
-gulp.task("createMaps", ["common","css"], function () {
-    var jsFilter = filter('**/*.js');
-    var cssFilter = filter('**/*.css');
-    return gulp.src(config.buildAssets + "/**")
-        .pipe(jsFilter)
-        .pipe(uglify({mangle: true, compress: true}))
-        .pipe(jsFilter.restore())
-        .pipe(cssFilter)
-        .pipe(minifyCSS({keepBreaks: true}))
-        .pipe(cssFilter.restore())
-        .pipe(rev())//生成md5
-        .pipe(gulp.dest(config.buildAssets))
-        .pipe(rev.manifest({
-            path: config.sourceMapName + ".json"
+gulp.task("style", function () {
+    return gulp.src([dirSrc + "/asset/css/**/*.less", dirSrc + "/asset/css/**/*.css"])
+        .pipe(load.importCss())
+        .pipe(load.less({
+            paths: [path.join(__dirname, "src")]
         }))
-        .pipe(gulp.dest(config.sourceMapPath));
+        .pipe(load.minifyCss())
+        .pipe(gulp.dest(BUILD + "/css"))
 });
 
-//处理view , 替换静态资源
-gulp.task('html', ["createMaps"], function () {
-    return gulp.src("view/**/*.html")
-        .pipe(useref())
-        .pipe(my({
-//            path: __dirname+ "/"+ config.sourceMapName + ".json"
-            path: path.join(__dirname, config.sourceMapName + ".json")
+//js语法校验
+gulp.task("check:js", function () {
+    return gulp.src([dirSrc + "/asset/**/*.js"])
+        .pipe(load.jshint('.jshintrc'))
+        .pipe(load.jshint.reporter('default'));
+});
+
+
+//js入口搜集
+gulp.task("entry:js", function () {
+    return gulp.src(path.join(dirSrc, "page/**/*.html"))
+        .pipe(load.gatherJs())
+        .pipe(gulp.dest("other/entry_js.json"));
+});
+
+//js模块化合并
+gulp.task("comb:js", ["entry:js"], function () {
+    return gulp.src(path.join(webPack.fileName))
+        .pipe(load.webpack.configure(webPack.config))
+        .pipe(load.webpack.overrides(webPack.options))
+        .pipe(load.webpack.compile())
+        .pipe(load.webpack.format({
+            version: false,
+            timings: true
         }))
-        .pipe(gulp.dest(config.buildView));
+        .pipe(load.webpack.failAfter({
+            errors: true,
+            warnings: true
+        }))
+        .pipe(gulp.dest(BUILD));
 });
 
-//拷贝到项目svn目录
-gulp.task("copy", function () {
-    return gulp.src(config.baseBuild + "/**")
-        .pipe(gulp.dest(config.commitPath));
+//替换入口js的临时路径
+gulp.task("build:view", ["comb:js"], function () {
+    var assets = load.useref.assets({
+        searchPath: ["src", "build"]
+    });
+    var manifest = gulp.src("./other/combo_js.json");
+
+    var wiredep = require('wiredep').stream;
+    return gulp.src([dirSrc + "/page/**/*.html", "!" + dirSrc + "/page/include/**"])
+        .pipe(load.include({
+            prefix: config.devIncludePrefix || "@"
+        }))
+        .pipe(load.revAllRep({manifest: manifest}))
+        //插入bower components
+        .pipe(wiredep({
+            dependencies: true,
+            devDependencies: true,
+            ignorePath: /^(\.\.\/)*\.\./
+//            exclude: [/jquery/]
+        }))
+        .pipe(load.replace(/\/asset/g, ""))
+        .pipe(load.replace(/less/g, "css"))
+        .pipe(assets)
+        .pipe(gulp.dest(BUILD))
+        .pipe(assets.restore())
+        .pipe(load.useref())
+        .pipe(load.gulpif('*.html', gulp.dest(BUILD + "/view")));
 });
 
-//提交svn
-gulp.task("commit",["copy"], function () {
-    exec("svnShell.bat", function (err, stdout, stderr) {
-        if (err !== null) {
-            console.log('exec error: ' + err);
+//处理image
+gulp.task("image", function () {
+    return gulp.src(dirSrc + "/asset/images/**/*")
+        .pipe(load.cache(load.imgmin({ optimizationLevel: 5, progressive: true, interlaced: true })))
+        .pipe(gulp.dest(BUILD + "/images"))
+});
+
+gulp.task("revAll", function () {
+    var revAll = new load.revAll({
+        fileNameManifest: config.manifest,
+        dontRenameFile: [/\/chuck\/.+/g],
+        transformFilename: function (file, hash) {
+            var ext = path.extname(file.path);
+            return path.basename(file.path, ext) + "_" + hash.substr(0, 5) + ext;
         }
     });
+    return gulp.src([BUILD + "/**", "!" + BUILD + "/view/**"])
+        .pipe(load.gulpif("*.js", load.uglify()))
+        .pipe(revAll.revision())
+        .pipe(gulp.dest('pub'))
+        .pipe(revAll.manifestFile())
+        .pipe(gulp.dest('other'))
 });
 
-gulp.task("default", ["del"], function () {
-    gulp.start("html");
+gulp.task("replace:pub", ["revAll"], function () {
+    var manifest = gulp.src("other/" + config.manifest);
+    return gulp.src(BUILD + "/view/**")
+        .pipe(load.revAllRep({
+            manifest: manifest,
+            prefix: config.pubPrefix
+        }))
+        .pipe(gulp.dest("pub"));
+});
+
+//监控
+gulp.task("watch", function(){
+    gulp.watch("src/asset/css/**", ['style']);
+    gulp.watch("src/asset/image/**", ['image']);
+    gulp.watch(["src/asset/js/**", "src/page/**"], ['build:view']);
+});
+
+
+/*==发布任务==================================================*/
+//本地构建
+gulp.task("build", ["clean"], function () {
+    gulp.start("build:view", "style", "image");
+});
+
+//本地调试
+gulp.task("debug", ["build"], function () {
+    gulp.start("server");
+});
+
+//发布正式
+gulp.task("pub", function () {
+    gulp.start("replace:pub");
+});
+
+gulp.task("server", function () {
+    app();
+    gulp.start("watch");
+});
+
+gulp.task("default", function () {
+    gulp.start("debug");
 });

@@ -5,7 +5,7 @@
 ##特点
  - 基础的css、img、js的检测、压缩、合并。
  - 自动编译`Less`
- - 内置`webpack`,兼容`AMD` or `CMD`开发方式，无需引入`requirejs` or `seajs`库。自动的模块打包方式，完全没有`requirejs`的`rjs`配置的烦恼。
+ - 内置`webpack`,兼容`AMD` or `CMD`开发方式，无需引入`requirejs` or `seajs`库。自动的模块打包方式，完全没有`requirejs`的`rjs`配置的烦恼。[http://yeoman.io/authoring/](详见说明)
  - 本地server服务，方便数据mock. 详见说明
  - 本地静态文件的`SSI include`支持  详见说明
  - 使用`bower`进行js的依赖管理

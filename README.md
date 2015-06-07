@@ -1,6 +1,6 @@
 # 前端项目工程化生成器
- 
- [![Build Status](https://travis-ci.org/stylehuan/generator-ctfd.png)](https://travis-ci.org/stylehuan/generator-ctfd
+
+ [![Build Status](https://travis-ci.org/[stylehuan]/[generator-ctfd].png)](https://travis-ci.org/[stylehuan]/[generator-ctfd])
  
  根据`yeoman-generator`编写的项目构建工具的生成器，可以快速的搭建前端一系列解决方案。
 

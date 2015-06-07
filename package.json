@@ -13,9 +13,6 @@
     "keywords": [
         "yeoman-generator"
     ],
-    "scripts":{
-//        "test": "XXXX"
-    },
     "dependencies": {
         "yeoman-generator": "*"
     }

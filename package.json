@@ -1,19 +1,34 @@
 {
-    "name": "generator-ctfd",
-    "version": "0.0.1",
-    "description": "yo generator",
-    "author": {
-        "name": "misar",
-        "email": "fhuanweb@gmial.com"
-    },
-    "files": [
-        "app",
-        "router"
-    ],
-    "keywords": [
-        "yeoman-generator"
-    ],
-    "dependencies": {
-        "yeoman-generator": "*"
-    }
+  "name": "generator-ctfd",
+  "version": "0.0.1",
+  "description": "yo generator",
+  "author": "misar <fhuanweb@gmial.com>",
+  "files": [
+    "app",
+    "router"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "yeoman-generator": "*"
+  },
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stylehuan/generator-ctfd.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stylehuan/generator-ctfd/issues"
+  },
+  "homepage": "https://github.com/stylehuan/generator-ctfd#readme"
 }

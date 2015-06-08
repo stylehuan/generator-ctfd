@@ -192,6 +192,7 @@ CTFDGenerator.prototype.createBowerrc= function () {
 
 CTFDGenerator.prototype.cteateApp = function app() {
     this.directory('src');
+    this.directory('routes');
     this.mkdir("test");
     this.mkdir("src/mod");
     this.mkdir("src/asset/css");
@@ -201,6 +202,7 @@ CTFDGenerator.prototype.cteateApp = function app() {
     this.mkdir("doc");
 
     this.template('README.md');
+    this.copy("routes/route.js", "routes/route.js");
     this.copy("page/index.html", "src/page/index.html");
     this.copy("h.png", "src/asset/images/h.png");
     this.copy("index.less", "src/asset/css/index.less");

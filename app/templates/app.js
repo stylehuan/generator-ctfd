@@ -2,11 +2,10 @@ var path = require('path');
 var http = require("http");
 var connect = require("connect");
 var serveStatic = require("serve-static");
-var serveIndex = require("serve-index");
 var exec = require('child_process').exec;
 var config = require("./build");
 var app = connect();
-var route = require("./route/route");
+var route = require("./routes/route");
 
 app.use(serveStatic(path.join(__dirname, "build"), {'index': ['index.html']}));
 

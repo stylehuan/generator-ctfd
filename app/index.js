@@ -168,6 +168,10 @@ CTFDGenerator.prototype.createPkg = function () {
     this.template("_package.json", "package.json");
 };
 
+CTFDGenerator.prototype.createBower=function(){
+    this.template("_bower.json", "bower.json");
+};
+
 CTFDGenerator.prototype.cteateManage = function () {
     if (this.isManage) {
         if (this.repositoryType == "svn") {
@@ -211,6 +215,7 @@ CTFDGenerator.prototype.cteateApp = function app() {
     this.copy("js/index.js", "src/asset/js/index.js");
     this.template("page/header.html", "src/page/include/header.html");
     this.template("page/footer.html", "src/page/include/footer.html");
+    this.copy("app.js", "app.js");
     this.copy("app.js", "app.js");
     this.copy("build.js", "build.js");
     this.copy("webpack.config.js", "webpack.config.js");

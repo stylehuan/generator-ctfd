@@ -32,7 +32,9 @@
         "gulp-webpack-build": "^0.6.1",
         "serve-static": "^1.9.2",
         "webpack": "^1.7.3",
-        "wiredep": "^2.2.2"
+        "wiredep": "^2.2.2",
+        "mockjs": "^0.1.10",
+        "gulp-gather-mainjs": "^0.0.2"
     },
     "dependencies": {
     }

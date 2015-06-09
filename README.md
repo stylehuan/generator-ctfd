@@ -14,11 +14,19 @@
  - 自动静态文件时间戳处理
  -  发布时支持静态文件添加`cdn`域前缀。
  
+ ##依赖
+ - 假设已安装`node`略
+ - 全局安装`[http://yeoman.io/authoring/](yo)`: `npm install yo -g` ;
+ - 全局安装 `[http://yeoman.io/authoring/](bower)`: `npm install bower -g` 
+ 
 ##入门
- - 全局安装 `npm install generator-ctfd -g`; 
- - 确保已经安装了`yo`, 在项目目录文件下运行：`npm install yo ctfd` 将出现相应的项目ask，如下图;
 
- - 上面完成后，运行`gulp build`,完毕后运行`gulp server`;
+ - 假设上面的依赖已经安装成功, 然后全局安装 `npm install generator-ctfd -g` 
+ - 在项目目录文件下运行：`npm install yo ctfd` 将出现相应的项目ask，如下图;
+
+- 如果上面已完成(项目目录已生成相应的文件), 安装模块依赖：运行:`npm install`
+- 安装lib依赖：`bower install`
+- 上面完成后，运行`gulp build`进行构建，运行`gulp server`显示基本的`demo`;
  
 ## API
 

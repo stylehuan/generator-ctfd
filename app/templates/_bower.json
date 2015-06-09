@@ -1,0 +1,22 @@
+{
+  "name": "<%= packageName %>",
+  "version": "<%= version %>",
+  "authors": [
+    "<%= author %> <%= email %>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "src/bower_components"
+  ],
+  "dependencies": {
+    "swfobject": "*"
+  },
+  "devDependencies": {
+    "jquery": "1.7"
+  }
+}

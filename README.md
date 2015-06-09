@@ -14,7 +14,7 @@
  - 自动静态文件时间戳处理
  -  发布时支持静态文件添加`cdn`域前缀。
  
- ##依赖
+##依赖
  - 假设已安装`node`略
  - 全局安装`[http://yeoman.io/authoring/](yo)`: `npm install yo -g` ;
  - 全局安装 `[http://yeoman.io/authoring/](bower)`: `npm install bower -g` 
